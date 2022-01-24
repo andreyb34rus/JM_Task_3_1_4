@@ -1,5 +1,6 @@
 package com.andreyb34rus.JM_Task_3_1_3.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,12 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "roles")
-@JsonIgnoreProperties("users")
+//@JsonIgnoreProperties("users")
 public class Role implements Serializable {
 
     @Id
@@ -31,7 +32,9 @@ public class Role implements Serializable {
         this.roleName = roleName;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    @JsonIgnore
+   // @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER, mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 
     @Override

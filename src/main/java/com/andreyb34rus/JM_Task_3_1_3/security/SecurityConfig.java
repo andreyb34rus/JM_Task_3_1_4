@@ -46,8 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/").permitAll() // доступность всем
-                .antMatchers("/user", "/api/**")
-                .access("hasAnyRole('ROLE_USER')") // разрешаем входить на /user пользователям с ролью User
+                .antMatchers("/user", "/api/**").permitAll()
+                //.access("hasAnyRole('ROLE_USER')") // разрешаем входить на /user пользователям с ролью User
                 .antMatchers("/admin")
                 .access("hasAnyRole('ROLE_ADMIN')"); // разрешаем входить на /user пользователям с ролью User
 

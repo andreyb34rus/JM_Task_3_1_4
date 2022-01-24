@@ -1,10 +1,8 @@
-// get roles array
+// get roles promise
 async function getRoles() {
     try {
         const resp = await fetch("api/role/all")
-        //const roles = await resp.json()
-        //console.log(roles)
-        return  await resp.json()
+        return await resp.json()
     } catch (error) {
         console.log(error.message())
     }
@@ -34,7 +32,6 @@ async function fillPrincipalTable() {
 
 // output for users table
 async function fillUsersTable() {
-   // await getRoles()
     let users
     try {
         const res = await fetch("api/user/all")
@@ -70,23 +67,25 @@ async function fillUsersTable() {
 }
 
 // get data from any form
-function getFormData(form) {
+async function getFormData(form) {
     let val = {}
-    const roles = getRoles()
+    const roles = await getRoles() // getting roles as array of objects
     for (const field of form) {
         if (field.name) {
             if (field.type === "select-multiple") {
                 val[field.name] = []
                 for (const option of field.options) {
                     if (option.selected) {
-                        for ( const role of roles){
-                            if(role.roleName === ('ROLE_' + option.value)){
-                                val[field.name].push({
-                                    id: role.id,
-                                    roleName: 'ROLE_' + option.value
-                                })
+                        roles.forEach(function (role) {
+                            if (role.roleName.substr(5) === (option.value)) {
+                                val[field.name].push(
+                                    {
+                                        id: role.id,
+                                        roleName: role.roleName
+                                    }
+                                )
                             }
-                        }
+                        })
                     }
                 }
             } else {
@@ -96,25 +95,25 @@ function getFormData(form) {
             }
         }
     }
-    console.log("объект из формы", val)
     return val
 }
 
 // save new user
 async function saveNewUser() {
     const newUserForm = document.getElementById('newUserForm')
-    const newUser = getFormData(newUserForm)
-    newUserForm.onsubmit = async (event) => {
-        event.preventDefault()
-        const res = await fetch("/api/user", {
+    const newUser = await getFormData(newUserForm)
+    try {
+        await fetch("/api/user", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(newUser)
         })
-        newUserForm.reset()
-        await fillUsersTable()
-        switchToUsersTab()
+    } catch (error) {
+        console.log(error.message)
     }
+    newUserForm.reset()
+    await fillUsersTable()
+    switchToUsersTab()
 }
 
 // switch current tab to users tab
@@ -136,8 +135,13 @@ async function listenDeleteModal() {
 
 // fill the delete user modal
 async function fillDeleteModal(id) {
-    const res = await fetch(`api/user/${id}`)
-    const user = await res.json()
+    let user
+    try {
+        const res = await fetch(`api/user/${id}`)
+        user = await res.json()
+    } catch (error) {
+        console.log(error.message)
+    }
     document.getElementById('idDelete').setAttribute("value", user.id)
     document.getElementById('firstNameDelete').setAttribute("value", user.firstName)
     document.getElementById('lastNameDelete').setAttribute("value", user.lastName)
@@ -150,27 +154,36 @@ async function fillDeleteModal(id) {
 // delete user
 async function deleteUser() {
     const id = document.getElementById('idDelete').value
-    await fetch(`api/user/${id}`, {
-        method: "DELETE", headers: {
-            "Content-Type": "application/json"
-        }
-    })
+    try {
+        await fetch(`api/user/${id}`, {
+            method: "DELETE", headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 
 // listen the update modal to get user ID
 async function listenUpdateModal() {
     const updateModal = document.getElementById('edit-modal')
-    updateModal.addEventListener('show.bs.modal', await function (event) {
+    updateModal.addEventListener('show.bs.modal', async function (event) {
         const button = event.relatedTarget         // Button that triggered the modal
         const id = button.getAttribute('data-bs-updateUserId'); //Extract info from data-bs-* attributes
-        fillUpdateModal(id)
+        await fillUpdateModal(id)
     })
 }
 
 // fill the update user modal
 async function fillUpdateModal(id) {
-    const res = await fetch(`api/user/${id}`)
-    const user = await res.json()
+    let user
+    try {
+        const res = await fetch(`api/user/${id}`)
+        user = await res.json()
+    } catch (error) {
+       console.log(error.message)
+    }
     document.getElementById('idEdit').setAttribute("value", user.id)
     document.getElementById('firstNameEdit').setAttribute("value", user.firstName)
     document.getElementById('lastNameEdit').setAttribute("value", user.lastName)
@@ -178,21 +191,37 @@ async function fillUpdateModal(id) {
     document.getElementById('emailEdit').setAttribute("value", user.email)
     document.getElementById('passwordEdit').setAttribute("value", user.password)
     const elem = document.getElementById("rolesEdit")
-    elem.innerHTML = user.roles.map(role => "<option>" + role.roleName.substr(5) + "</option>").join(" ")
+    elem.innerHTML = ""
+    const optionUser = document.createElement("option")
+    optionUser.innerText = "USER"
+    optionUser.setAttribute("selected", "true")
+    elem.appendChild(optionUser)
+    const optionAdmin = document.createElement("option")
+    optionAdmin.innerText = "ADMIN"
+    user.roles.map(role => {
+        if (role.roleName.substr(5) === "ADMIN") {
+            optionAdmin.setAttribute("selected", "true")
+        }
+    })
+    elem.appendChild(optionAdmin)
 }
 
 // update user
 async function updateUser() {
     const elem = document.getElementById('editFormBody')
-    console.log(elem)
-    const user = getFormData(elem)
-    await fetch("api/user", {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user)
-    })
+    const user = await getFormData(elem)
+    console.log(JSON.stringify(user))
+    try {
+        await fetch("api/user", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 
 

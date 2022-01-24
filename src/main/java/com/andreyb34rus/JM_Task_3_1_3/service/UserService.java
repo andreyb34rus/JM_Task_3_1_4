@@ -2,6 +2,7 @@ package com.andreyb34rus.JM_Task_3_1_3.service;
 
 import com.andreyb34rus.JM_Task_3_1_3.model.Role;
 import com.andreyb34rus.JM_Task_3_1_3.model.User;
+import com.andreyb34rus.JM_Task_3_1_3.repository.RoleRepository;
 import com.andreyb34rus.JM_Task_3_1_3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -44,6 +48,8 @@ public class UserService {
     public void setInitData() {
         Role userRole = new Role("ROLE_USER");
         Role adminRole = new Role("ROLE_ADMIN");
+        roleRepository.save(userRole);
+        roleRepository.save(adminRole);
         userRepository.save(new User("user", "user", (byte) 30, "user@mail.ru", "123", new HashSet<Role>() {{
             add(userRole);
         }}));
