@@ -1,7 +1,7 @@
-package com.andreyb34rus.JM_Task_3_1_3.restControllers;
+package com.andreyb34rus.JM_Task_3_1_4.restControllers;
 
-import com.andreyb34rus.JM_Task_3_1_3.model.Role;
-import com.andreyb34rus.JM_Task_3_1_3.service.RoleService;
+import com.andreyb34rus.JM_Task_3_1_4.model.Role;
+import com.andreyb34rus.JM_Task_3_1_4.service.RoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

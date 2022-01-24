@@ -1,6 +1,6 @@
-package com.andreyb34rus.JM_Task_3_1_3.repository;
+package com.andreyb34rus.JM_Task_3_1_4.repository;
 
-import com.andreyb34rus.JM_Task_3_1_3.model.Role;
+import com.andreyb34rus.JM_Task_3_1_4.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

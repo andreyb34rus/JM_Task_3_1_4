@@ -1,8 +1,6 @@
-package com.andreyb34rus.JM_Task_3_1_3.model;
+package com.andreyb34rus.JM_Task_3_1_4.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
