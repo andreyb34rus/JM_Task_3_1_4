@@ -50,13 +50,9 @@ public class UserRestController {
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
             userService.save(user);
-            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("------------------------------------------------------");
             System.out.println(e.getMessage());
-            System.out.println("------------------------------------------------------");
-
             return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
         }
     }
@@ -74,7 +70,7 @@ public class UserRestController {
     @PatchMapping
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         try {
-            userService.update( user);
+            userService.update(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);

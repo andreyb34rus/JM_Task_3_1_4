@@ -11,12 +11,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
-//@AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "roles")
-//@JsonIgnoreProperties("users")
 public class Role implements Serializable {
 
     @Id
@@ -31,7 +29,6 @@ public class Role implements Serializable {
     }
 
     @JsonIgnore
-   // @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER, mappedBy = "roles")
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 

@@ -21,7 +21,7 @@ public class RoleRestController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Role>> getAllRoles(){
+    public ResponseEntity<List<Role>> getAllRoles() {
         List<Role> roles = roleService.getAllRoles();
         if (roles == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
