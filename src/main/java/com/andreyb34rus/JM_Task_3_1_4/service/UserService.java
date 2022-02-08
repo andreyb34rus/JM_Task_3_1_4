@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,8 +23,21 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private EntityManager em;
+
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        /*
+        // один из способов для устранения ошибки LazyInitializationException
+        User user = userRepository.findByEmail(email);
+        user.getRoles().iterator();
+        return user;
+        */
+        // один из способов для устранения ошибки LazyInitializationException
+        TypedQuery<User> user = em.createQuery(
+                "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :emailParam", User.class);
+        user.setParameter("emailParam", email);
+        return user.getSingleResult();
     }
 
     public User getUserById(long id) {
